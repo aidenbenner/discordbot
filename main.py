@@ -102,44 +102,15 @@ async def on_message(message):
     if not message.content.startswith(delim):
         return
 
-    out = Command()
+    c = Command()
     for x in commands:
         if message.content.startswith(delim + x.trigger):
-            out = x
+            c = x
             break
 
     tmp = await client.send_message(message.channel, "loading...")
-    val = out.call(message)
+    val = c.call(message)
     await client.edit_message(tmp, val)
     return
-
-
-    print(message.channel, "author " + str(message.author))
-    print(message.channel, "client " + str(client.user.name))
-    print(message.channel, "client " + str(client.user))
-    print(message.channel, "client " + str(client.user.id))
-
-    content = message.content
-    args = content.split()
-
-    if '--debug' in args:
-        for x in args:
-            await client.send_message(message.channel, x)
-
-    if message.content.startswith('!dice'):
-        counter = 0
-        tmp = await client.send_message(message.channel, str(r.randint(1, 6)))
-
-    if message.content.startswith('!test'):
-        counter = 0
-        tmp = await client.send_message(message.channel, 'Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
-
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
 
 client.run(CLIENT_SECRET)
